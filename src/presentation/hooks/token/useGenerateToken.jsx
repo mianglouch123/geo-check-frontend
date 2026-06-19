@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef , useCallback } from "react";
 import { generateTokenUseCase } from "../../../application/use-cases/token/generateToken.useCase.js";
 
 export function useGenerateToken() {
@@ -7,7 +7,6 @@ export function useGenerateToken() {
   const [token, setToken] = useState(null);
   
   const isMountedRef = useRef(true);
-  const idRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -15,14 +14,12 @@ export function useGenerateToken() {
     };
   }, []);
 
-  const generateToken = async () => {
-    const currentIdRef = ++idRef.current;
+  const generateToken = useCallback(async () => {
     setLoading(true);
     setError(null);
     
     try {
       const res = await generateTokenUseCase();
-      if (idRef.current !== currentIdRef) return null;
       
       if (res.ok) {
         if (isMountedRef.current) {
@@ -36,17 +33,16 @@ export function useGenerateToken() {
         return null;
       }
     } catch (err) {
-      if (idRef.current !== currentIdRef) return null;
       if (isMountedRef.current) {
         setError(err?.response?.data?.message || "Error al momento de generar el token");
       }
       return null;
     } finally {
-      if (idRef.current === currentIdRef && isMountedRef.current) {
+      if (isMountedRef.current) {
         setLoading(false);
       }
     }
-  };
+  }, []);
 
   const clearToken = () => {
     if (isMountedRef.current) {

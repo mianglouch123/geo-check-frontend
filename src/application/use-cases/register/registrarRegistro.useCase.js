@@ -12,8 +12,8 @@ export async function registrarRegistroUseCase(data) {
   }
 
   // 2. Extraer datos para el repositorio
-  const { token, tipo, broker } = data;
+  const { token, tipo } = data;
 
-  return await registroRepository.registrar({ token, tipo, broker });
+  return await registroRepository.registrar({ token, tipo });
   
 }

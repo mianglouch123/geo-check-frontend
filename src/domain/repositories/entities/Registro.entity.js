@@ -12,9 +12,6 @@ export class RegistroEntity {
     if (!this.tipo || !['ENTRADA', 'SALIDA'].includes(this.tipo)) {
       return { ok: false, message: 'Tipo inválido' };
     }
-    if (!this.broker) {
-      return { ok: false, message: 'Broker requerido' };
-    }
     if (!this.token) {
       return { ok: false, message: 'Token requerido' };
     }

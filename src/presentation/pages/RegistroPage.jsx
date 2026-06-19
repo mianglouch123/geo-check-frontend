@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useCheckToken } from '../hooks/token/useCheckToken.jsx';
 import { useRegistro } from '../hooks/registro/useRegistro.jsx';
-import { BROKERS } from '../../domain/constants/brokers.js';
 
 export default function RegistroPage() {
   const [searchParams] = useSearchParams();
@@ -11,7 +10,6 @@ export default function RegistroPage() {
 
   
   const [tipo, setTipo] = useState('');
-  const [broker, setBroker] = useState('');
   const [validationCompleted, setValidationCompleted] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState(false);
   
@@ -61,9 +59,9 @@ export default function RegistroPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!tipo || !broker) return;
+    if (!tipo) return;
     
-    const result = await registrar({ token, tipo, broker });
+    const result = await registrar({ token, tipo });
     if (result.ok) {
       navigate(`/confirmacion?metodo=${tipo}`);
     }
@@ -111,7 +109,6 @@ export default function RegistroPage() {
     );
   }
 
- console.log(registroError);
   // Formulario
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -191,27 +188,12 @@ export default function RegistroPage() {
                 </div>
               </div>
 
-              {/* Broker */}
-              <div className="mb-8">
-                <label className="block font-semibold text-gray-700 mb-2">
-                  Broker / AMV / EFP
-                </label>
-                <select
-                  value={broker}
-                  onChange={(e) => setBroker(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-                >
-                  <option value="">Selecciona una opción...</option>
-                  {BROKERS.map(b => (
-                    <option key={b.value} value={b.value}>{b.label}</option>
-                  ))}
-                </select>
-              </div>
+            
 
               {/* Botón */}
               <button
                 type="submit"
-                disabled={submitting || !tipo || !broker}
+                disabled={submitting || !tipo}
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
               >
                 {submitting ? (
